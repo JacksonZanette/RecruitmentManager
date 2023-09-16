@@ -1,12 +1,12 @@
 ﻿using RecruitmentManager.Domain.Entities;
 
-namespace RecruitmentManager.Domain.Interfaces.Repositories
+namespace RecruitmentManager.Domain.Interfaces.Services
 {
-    public interface ICandidatesRepository
+    public interface ICandidatesService
     {
         Task Create(Candidate candidate, CancellationToken cancellationToken);
 
-        Task<Candidate> GetById(Guid id, CancellationToken none);
+        Task<Candidate> GetById(Guid id, CancellationToken cancellationToken);
 
         Task Update(Candidate candidate, CancellationToken cancellationToken);
 
