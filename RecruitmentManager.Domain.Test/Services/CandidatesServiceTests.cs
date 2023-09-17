@@ -36,11 +36,11 @@ namespace RecruitmentManager.Domain.Test.Services
             };
 
             //Act
-            await _service.CreateAsync(candidateSaveDto, CancellationToken.None);
+            await _service.CreateAsync(candidateSaveDto);
 
             //Assert
             _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.CreateAsync(
-                It.Is<Candidate>(e => e.Name == candidateSaveDto.Name), CancellationToken.None), Times.Once);
+                It.Is<Candidate>(e => e.Name == candidateSaveDto.Name)), Times.Once);
         }
 
         [Trait(nameof(CandidatesService), nameof(CandidatesService.CreateAsync))]
@@ -55,11 +55,11 @@ namespace RecruitmentManager.Domain.Test.Services
             };
 
             //Act
-            await _service.CreateAsync(candidateSaveDto, CancellationToken.None);
+            await _service.CreateAsync(candidateSaveDto);
 
             //Assert
             _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.CreateAsync(
-                It.Is<Candidate>(e => e.Name == candidateSaveDto.Name && e.Score == candidateSaveDto.Score), CancellationToken.None), Times.Once);
+                It.Is<Candidate>(e => e.Name == candidateSaveDto.Name && e.Score == candidateSaveDto.Score)), Times.Once);
         }
 
         [Trait(nameof(CandidatesService), nameof(CandidatesService.CreateAsync))]
@@ -76,11 +76,11 @@ namespace RecruitmentManager.Domain.Test.Services
             };
 
             //Act
-            var exception = await Assert.ThrowsAsync<DomainValidationException>(async () => await _service.CreateAsync(candidateSaveDto, CancellationToken.None));
+            var exception = await Assert.ThrowsAsync<DomainValidationException>(async () => await _service.CreateAsync(candidateSaveDto));
 
             //Assert
             Assert.Equal("The provided candidate score is invalid", exception.Message);
-            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.CreateAsync(It.IsAny<Candidate>(), CancellationToken.None), Times.Never);
+            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.CreateAsync(It.IsAny<Candidate>()), Times.Never);
         }
 
         [Trait(nameof(CandidatesService), nameof(CandidatesService.CreateAsync))]
@@ -97,22 +97,22 @@ namespace RecruitmentManager.Domain.Test.Services
             };
 
             //Act
-            var exception = await Assert.ThrowsAsync<DomainValidationException>(async () => await _service.CreateAsync(candidateSaveDto, CancellationToken.None));
+            var exception = await Assert.ThrowsAsync<DomainValidationException>(async () => await _service.CreateAsync(candidateSaveDto));
 
             //Assert
             Assert.Equal("The provided candidate name is invalid", exception.Message);
-            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.CreateAsync(It.IsAny<Candidate>(), CancellationToken.None), Times.Never);
+            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.CreateAsync(It.IsAny<Candidate>()), Times.Never);
         }
 
         [Trait(nameof(CandidatesService), nameof(CandidatesService.UpdateAsync))]
         [Theory(DisplayName = "Update candidate with invalid score")]
         [InlineAutoData(-1)]
         [InlineAutoData(-101)]
-        public async Task WhenUpdateIsCalled_WithCandidateWithInvalidScoreForUpdate_ShouldPersist(int score, Guid id, string name)
+        public async Task WhenUpdateIsCalled_WithCandidateWithInvalidScoreForUpdate_ShouldPersist(int score, int id, string name)
         {
             //Arrange
             _autoMocker.GetMock<ICandidatesRepository>()
-                .Setup(m => m.GetByIdAsync(id, CancellationToken.None))
+                .Setup(m => m.GetByIdAsync(id))
                 .ReturnsAsync(new Candidate
                 {
                     Id = id,
@@ -126,18 +126,18 @@ namespace RecruitmentManager.Domain.Test.Services
             };
 
             //Act
-            var exception = await Assert.ThrowsAsync<DomainValidationException>(async () => await _service.UpdateAsync(id, candidateSaveDto, CancellationToken.None));
+            var exception = await Assert.ThrowsAsync<DomainValidationException>(async () => await _service.UpdateAsync(id, candidateSaveDto));
 
             //Assert
             Assert.Equal("The provided candidate score is invalid", exception.Message);
 
-            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetByIdAsync(id, CancellationToken.None), Times.Never);
-            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.UpdateAsync(It.IsAny<Candidate>(), CancellationToken.None), Times.Never);
+            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetByIdAsync(id), Times.Never);
+            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.UpdateAsync(It.IsAny<Candidate>()), Times.Never);
         }
 
         [Trait(nameof(CandidatesService), nameof(CandidatesService.UpdateAsync))]
         [Theory(DisplayName = "Update inexistent candidate"), AutoData]
-        public async Task WhenUpdateIsCalled_WithCandidateNotFound_ShouldNotPersist(Guid id, string name)
+        public async Task WhenUpdateIsCalled_WithCandidateNotFound_ShouldNotPersist(int id, string name)
         {
             //Arrange
             var candidateSaveDto = new CandidateSaveDto
@@ -147,24 +147,24 @@ namespace RecruitmentManager.Domain.Test.Services
             };
 
             //Act
-            var exception = await Assert.ThrowsAsync<DomainNotFoundException>(async () => await _service.UpdateAsync(id, candidateSaveDto, CancellationToken.None));
+            var exception = await Assert.ThrowsAsync<DomainNotFoundException>(async () => await _service.UpdateAsync(id, candidateSaveDto));
 
             //Assert
             Assert.Equal("The candidate was not found for provided id", exception.Message);
 
-            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetByIdAsync(id, CancellationToken.None), Times.Once);
-            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.UpdateAsync(It.IsAny<Candidate>(), CancellationToken.None), Times.Never);
+            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetByIdAsync(id), Times.Once);
+            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.UpdateAsync(It.IsAny<Candidate>()), Times.Never);
         }
 
         [Trait(nameof(CandidatesService), nameof(CandidatesService.UpdateAsync))]
         [Theory(DisplayName = "Update candidate with valid score"), AutoData]
-        public async Task WhenUpdateIsCalled_WithCandidateForUpdate_ShouldPersist(Guid id, string name)
+        public async Task WhenUpdateIsCalled_WithCandidateForUpdate_ShouldPersist(int id, string name)
         {
             //Arrange
             var score = GetRandomValidCandidateScore();
 
             _autoMocker.GetMock<ICandidatesRepository>()
-                .Setup(m => m.GetByIdAsync(id, CancellationToken.None))
+                .Setup(m => m.GetByIdAsync(id))
                 .ReturnsAsync(new Candidate
                 {
                     Id = id,
@@ -178,11 +178,11 @@ namespace RecruitmentManager.Domain.Test.Services
             };
 
             //Act
-            await _service.UpdateAsync(id, candidateSaveDto, CancellationToken.None);
+            await _service.UpdateAsync(id, candidateSaveDto);
 
-            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetByIdAsync(id, CancellationToken.None), Times.Once);
+            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetByIdAsync(id), Times.Once);
             _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.UpdateAsync(
-                It.Is<Candidate>(e => e.Score == score && e.Name == name), CancellationToken.None), Times.Once);
+                It.Is<Candidate>(e => e.Score == score && e.Name == name)), Times.Once);
         }
 
         [Trait(nameof(CandidatesService), nameof(CandidatesService.GetAsync))]
@@ -195,26 +195,26 @@ namespace RecruitmentManager.Domain.Test.Services
             {
                 new()
                 {
-                    Id = Guid.NewGuid(),
+                    Id = 1,
                     Name = faker.Random.String(),
                     Score = GetRandomValidCandidateScore()
                 },
                 new()
                 {
-                    Id = Guid.NewGuid(),
+                    Id = 2,
                     Name = faker.Random.String(),
                     Score = GetRandomValidCandidateScore()
                 },
             };
 
             _autoMocker.GetMock<ICandidatesRepository>()
-                .Setup(m => m.GetAsync(CancellationToken.None))
+                .Setup(m => m.GetAsync())
                 .ReturnsAsync(candidates);
 
             //Act
-            var result = await _service.GetAsync(CancellationToken.None);
+            var result = await _service.GetAsync();
 
-            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetAsync(CancellationToken.None), Times.Once);
+            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetAsync(), Times.Once);
             Assert.Equivalent(candidates, result);
         }
 
@@ -224,19 +224,19 @@ namespace RecruitmentManager.Domain.Test.Services
         {
             //Arrange
             _autoMocker.GetMock<ICandidatesRepository>()
-                .Setup(m => m.GetAsync(CancellationToken.None))
+                .Setup(m => m.GetAsync())
                 .ReturnsAsync(Enumerable.Empty<Candidate>());
 
             //Act
-            var result = await _service.GetAsync(CancellationToken.None);
+            var result = await _service.GetAsync();
 
-            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetAsync(CancellationToken.None), Times.Once);
+            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetAsync(), Times.Once);
             Assert.Empty(result);
         }
 
         [Trait(nameof(CandidatesService), nameof(CandidatesService.GetByIdAsync))]
         [Theory(DisplayName = "Get existing candidate by id"), AutoData]
-        public async Task WhenGetByIdIsCalled_WithExistingCandidate_ShouldReturnCandidate(Guid id, string name)
+        public async Task WhenGetByIdIsCalled_WithExistingCandidate_ShouldReturnCandidate(int id, string name)
         {
             //Arrange
             var candidate = new Candidate
@@ -247,19 +247,19 @@ namespace RecruitmentManager.Domain.Test.Services
             };
 
             _autoMocker.GetMock<ICandidatesRepository>()
-                .Setup(m => m.GetByIdAsync(id, CancellationToken.None))
+                .Setup(m => m.GetByIdAsync(id))
                 .ReturnsAsync(candidate);
 
             //Act
-            var result = await _service.GetByIdAsync(id, CancellationToken.None);
+            var result = await _service.GetByIdAsync(id);
 
-            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetByIdAsync(id, CancellationToken.None), Times.Once);
+            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetByIdAsync(id), Times.Once);
             Assert.Equivalent(candidate, result);
         }
 
         [Trait(nameof(CandidatesService), nameof(CandidatesService.GetByIdAsync))]
         [Theory(DisplayName = "Get inexisting candidate by id"), AutoData]
-        public async Task WhenGetByIdIsCalled_WithInexistingCandidate_ShouldReturnCandidate(Guid id, string name)
+        public async Task WhenGetByIdIsCalled_WithInexistingCandidate_ShouldReturnCandidate(int id, string name)
         {
             //Arrange
             var candidate = new Candidate
@@ -270,21 +270,21 @@ namespace RecruitmentManager.Domain.Test.Services
             };
 
             //Act
-            var result = await _service.GetByIdAsync(id, CancellationToken.None);
+            var result = await _service.GetByIdAsync(id);
 
-            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetByIdAsync(id, CancellationToken.None), Times.Once);
+            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.GetByIdAsync(id), Times.Once);
             Assert.Null(result);
         }
 
         [Trait(nameof(CandidatesService), nameof(CandidatesService.DeleteAsync))]
         [Theory(DisplayName = "Delete candidate by id"), AutoData]
-        public async Task WhenDeleteIsCalled_WithInexistingCandidateById_ShouldReturnCandidate(Guid id)
+        public async Task WhenDeleteIsCalled_WithInexistingCandidateById_ShouldReturnCandidate(int id)
         {
             //Act
-            await _service.DeleteAsync(id, CancellationToken.None);
+            await _service.DeleteAsync(id);
 
             //Assert
-            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.DeleteAsync(id, CancellationToken.None), Times.Once);
+            _autoMocker.GetMock<ICandidatesRepository>().Verify(m => m.DeleteAsync(id), Times.Once);
         }
 
         private static int GetRandomValidCandidateScore() => new Faker().Random.Int(0, 100);

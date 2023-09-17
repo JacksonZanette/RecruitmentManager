@@ -4,14 +4,14 @@ namespace RecruitmentManager.Domain.Interfaces.Services
 {
     public interface ICandidatesService
     {
-        Task CreateAsync(CandidateSaveDto candidateSaveDto, CancellationToken cancellationToken);
+        Task CreateAsync(CandidateSaveDto candidateSaveDto);
 
-        Task<IEnumerable<CandidateDto>> GetAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<CandidateDto>> GetAsync();
 
-        Task<CandidateDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<CandidateDto> GetByIdAsync(int id);
 
-        Task UpdateAsync(Guid id, CandidateSaveDto candidateSaveDto, CancellationToken cancellationToken);
+        Task UpdateAsync(int id, CandidateSaveDto candidateSaveDto);
 
-        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+        Task DeleteAsync(int id);
     }
 }

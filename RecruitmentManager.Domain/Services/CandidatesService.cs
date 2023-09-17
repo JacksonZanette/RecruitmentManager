@@ -18,35 +18,35 @@ namespace RecruitmentManager.Domain.Services
             _mapper = mapper;
         }
 
-        public async Task CreateAsync(CandidateSaveDto candidateSaveDto, CancellationToken cancellationToken)
+        public async Task CreateAsync(CandidateSaveDto candidateSaveDto)
         {
             ValidateCandidate(candidateSaveDto);
 
             var candidate = _mapper.Map<CandidateSaveDto, Candidate>(candidateSaveDto);
 
-            await _candidatesRepository.CreateAsync(candidate, cancellationToken);
+            await _candidatesRepository.CreateAsync(candidate);
         }
 
-        public async Task<IEnumerable<CandidateDto>> GetAsync(CancellationToken cancellationToken)
-            => _mapper.Map<IEnumerable<Candidate>, IEnumerable<CandidateDto>>(await _candidatesRepository.GetAsync(cancellationToken));
+        public async Task<IEnumerable<CandidateDto>> GetAsync()
+            => _mapper.Map<IEnumerable<Candidate>, IEnumerable<CandidateDto>>(await _candidatesRepository.GetAsync());
 
-        public async Task<CandidateDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
-            => _mapper.Map<Candidate, CandidateDto>(await _candidatesRepository.GetByIdAsync(id, cancellationToken));
+        public async Task<CandidateDto> GetByIdAsync(int id)
+            => _mapper.Map<Candidate, CandidateDto>(await _candidatesRepository.GetByIdAsync(id));
 
-        public async Task UpdateAsync(Guid id, CandidateSaveDto candidateSaveDto, CancellationToken cancellationToken)
+        public async Task UpdateAsync(int id, CandidateSaveDto candidateSaveDto)
         {
             ValidateCandidate(candidateSaveDto);
 
-            var existingCandidate = await _candidatesRepository.GetByIdAsync(id, cancellationToken)
+            var existingCandidate = await _candidatesRepository.GetByIdAsync(id)
                 ?? throw new DomainNotFoundException("The candidate was not found for provided id");
 
             _mapper.Map(candidateSaveDto, existingCandidate);
 
-            await _candidatesRepository.UpdateAsync(existingCandidate, cancellationToken);
+            await _candidatesRepository.UpdateAsync(existingCandidate);
         }
 
-        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
-            => await _candidatesRepository.DeleteAsync(id, cancellationToken);
+        public async Task DeleteAsync(int id)
+            => await _candidatesRepository.DeleteAsync(id);
 
         private static void ValidateCandidate(CandidateSaveDto candidateSaveDto)
         {

@@ -1,4 +1,5 @@
 using RecruitmentManager.Api.Configuration;
+using RecruitmentManager.Infra.Database;
 
 namespace RecruitmentManager.Api
 {
@@ -11,9 +12,11 @@ namespace RecruitmentManager.Api
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddCustomDependencies();
+            builder.Services.AddCustomDependencies(builder.Configuration);
 
             var app = builder.Build();
+
+            app.Services.GetService<DatabaseSetup>()!.Setup();
 
             if (app.Environment.IsDevelopment())
             {

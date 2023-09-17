@@ -14,18 +14,32 @@ namespace RecruitmentManager.Api.Controllers
             => _candidatesService = candidatesService;
 
         [HttpPost]
-        public async Task<IActionResult> Create(CandidateSaveDto candidateSaveDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Create(CandidateSaveDto candidateSaveDto)
         {
-            await _candidatesService.CreateAsync(candidateSaveDto, cancellationToken);
+            await _candidatesService.CreateAsync(candidateSaveDto);
             return Ok();
         }
 
         [HttpGet]
-        public async Task<IEnumerable<CandidateDto>> Get(CancellationToken cancellationToken)
-            => await _candidatesService.GetAsync(cancellationToken);
+        public async Task<IEnumerable<CandidateDto>> Get()
+            => await _candidatesService.GetAsync();
 
         [HttpGet("{id}")]
-        public async Task<CandidateDto> GetById(Guid id, CancellationToken cancellationToken)
-            => await _candidatesService.GetByIdAsync(id, cancellationToken);
+        public async Task<CandidateDto> GetById(int id)
+            => await _candidatesService.GetByIdAsync(id);
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, CandidateSaveDto candidateSaveDto)
+        {
+            await _candidatesService.UpdateAsync(id, candidateSaveDto);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _candidatesService.DeleteAsync(id);
+            return NoContent();
+        }
     }
 }
