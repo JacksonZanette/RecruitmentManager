@@ -25,10 +25,11 @@ namespace RecruitmentManager.Infra.Repositories
             return await connection.QueryAsync<User>("SELECT Id, Name, Password FROM User;");
         }
 
-        public async Task<bool> ExistsByNameAndPassword(string name, string password)
+        public async Task<bool> ExistsByNameAndPassword(string name, string? password = default)
         {
             using var connection = new SqliteConnection(_databaseConfig.Name);
-            return await connection.ExecuteScalarAsync<bool>("SELECT COUNT(1) FROM User WHERE Name = @name AND Password = @password;", new { name, password });
+            var command = $"SELECT COUNT(1) FROM User WHERE Name = @name{(password is not null ? " AND Password = @password" : string.Empty)};";
+            return await connection.ExecuteScalarAsync<bool>(command, new { name, password });
         }
     }
 }

@@ -28,7 +28,7 @@ namespace RecruitmentManager.Infra.Repositories
         public async Task<Candidate> GetByIdAsync(int id)
         {
             using var connection = new SqliteConnection(_databaseConfig.Name);
-            return await connection.QuerySingleAsync<Candidate>("SELECT Id, Name, Score FROM Candidate WHERE Id = @id;", new { id });
+            return await connection.QueryFirstOrDefaultAsync<Candidate>("SELECT Id, Name, Score FROM Candidate WHERE Id = @id;", new { id });
         }
 
         public async Task UpdateAsync(Candidate candidate)

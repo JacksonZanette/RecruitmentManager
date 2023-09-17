@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
 using RecruitmentManager.Api.Configuration;
+using RecruitmentManager.Api.Middlewares;
 using RecruitmentManager.Infra.Database;
 
 namespace RecruitmentManager.Api
@@ -10,7 +11,7 @@ namespace RecruitmentManager.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(configure => configure.Filters.Add<ExceptionFilter>());
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(option =>
             {

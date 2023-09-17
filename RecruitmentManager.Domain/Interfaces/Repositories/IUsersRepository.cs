@@ -8,6 +8,6 @@ namespace RecruitmentManager.Domain.Interfaces.Repositories
 
         Task<IEnumerable<User>> GetAsync();
 
-        Task<bool> ExistsByNameAndPassword(string name, string password);
+        Task<bool> ExistsByNameAndPassword(string name, string? password = default);
     }
 }
