@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RecruitmentManager.Domain.Dtos;
 using RecruitmentManager.Domain.Interfaces.Services;
 
 namespace RecruitmentManager.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/candidates")]
     public class CandidatesController : ControllerBase

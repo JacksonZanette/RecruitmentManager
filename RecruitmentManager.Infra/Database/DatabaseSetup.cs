@@ -14,12 +14,11 @@ namespace RecruitmentManager.Infra.Database
         {
             using var connection = new SqliteConnection(_databaseConfig.Name);
 
-            var table = connection.Query<string>("SELECT name FROM sqlite_master WHERE type='table' AND name = 'Candidate';");
-            var tableName = table.FirstOrDefault();
-            if (!string.IsNullOrEmpty(tableName) && tableName == "Candidate")
-                return;
+            if (!connection.ExecuteScalar<bool>("SELECT COUNT(1) FROM sqlite_master WHERE type='table' AND name = 'Candidate';"))
+                connection.Execute(@"CREATE TABLE Candidate (Id INTEGER PRIMARY KEY, Name TEXT NOT NULL, Score INTEGER NULL);");
 
-            connection.Execute(@"CREATE TABLE Candidate (Id INTEGER PRIMARY KEY, Name TEXT NOT NULL, Score INTEGER NULL);");
+            if (!connection.ExecuteScalar<bool>("SELECT COUNT(1) FROM sqlite_master WHERE type='table' AND name = 'User';"))
+                connection.Execute(@"CREATE TABLE User (Id INTEGER PRIMARY KEY, Name TEXT NOT NULL, Password TEXT NOT NULL);");
         }
     }
 }

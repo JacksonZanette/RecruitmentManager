@@ -10,6 +10,7 @@ namespace RecruitmentManager.Domain.Configuration
         {
             CreateMap<Candidate, CandidateDto>();
             CreateMap<CandidateSaveDto, Candidate>();
+            CreateMap<UserDto, User>();
         }
     }
 }
