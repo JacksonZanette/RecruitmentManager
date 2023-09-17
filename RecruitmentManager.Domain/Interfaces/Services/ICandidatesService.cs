@@ -1,15 +1,17 @@
-﻿using RecruitmentManager.Domain.Entities;
+﻿using RecruitmentManager.Domain.Dtos;
 
 namespace RecruitmentManager.Domain.Interfaces.Services
 {
     public interface ICandidatesService
     {
-        Task Create(Candidate candidate, CancellationToken cancellationToken);
+        Task CreateAsync(CandidateSaveDto candidateSaveDto, CancellationToken cancellationToken);
 
-        Task<Candidate> GetById(Guid id, CancellationToken cancellationToken);
+        Task<IEnumerable<CandidateDto>> GetAsync(CancellationToken cancellationToken);
 
-        Task Update(Candidate candidate, CancellationToken cancellationToken);
+        Task<CandidateDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
-        Task Delete(Guid id, CancellationToken cancellationToken);
+        Task UpdateAsync(Guid id, CandidateSaveDto candidateSaveDto, CancellationToken cancellationToken);
+
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
     }
 }

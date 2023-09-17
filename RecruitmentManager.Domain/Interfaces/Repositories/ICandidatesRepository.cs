@@ -4,12 +4,14 @@ namespace RecruitmentManager.Domain.Interfaces.Repositories
 {
     public interface ICandidatesRepository
     {
-        Task Create(Candidate candidate, CancellationToken cancellationToken);
+        Task CreateAsync(Candidate candidate, CancellationToken cancellationToken);
 
-        Task<Candidate> GetById(Guid id, CancellationToken none);
+        Task<Candidate> GetByIdAsync(Guid id, CancellationToken none);
 
-        Task Update(Candidate candidate, CancellationToken cancellationToken);
+        Task UpdateAsync(Candidate candidate, CancellationToken cancellationToken);
 
-        Task Delete(Guid id, CancellationToken cancellationToken);
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+
+        Task<IEnumerable<Candidate>> GetAsync(CancellationToken cancellationToken);
     }
 }
