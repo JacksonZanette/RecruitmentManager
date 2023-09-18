@@ -220,7 +220,7 @@ namespace RecruitmentManager.Domain.Test.Services
 
         [Trait(nameof(CandidatesService), nameof(CandidatesService.GetAsync))]
         [Fact(DisplayName = "Get no candidates")]
-        public async Task WhenGetCalled_WithNoCandidates_ShouldReturnCandidates()
+        public async Task WhenGetCalled_WithNoCandidates_ShouldReturnEmpty()
         {
             //Arrange
             _autoMocker.GetMock<ICandidatesRepository>()
